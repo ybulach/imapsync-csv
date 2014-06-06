@@ -105,7 +105,7 @@ user_current=0
 		echo "[=====================] DRYRUN ($user1_full to $user2_full)" | tee $logfile
 	elif [ $return -ne 0 ]; then
 		echo "[=====================] ERROR ($user1_full to $user2_full) Return code: $return" | tee $logfile
-		echo "$user1;$pass1;$user2;$pass2;$return" >> $errorfile
+		echo "$user1;$pass1;$user2;$pass2;$prefix1;$prefix2;$return" >> $errorfile
 	else
 		date=`date +%x_-_%X`
 		echo "[$date] SUCCESS ($user1_full)" | tee $logfile
