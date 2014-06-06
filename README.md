@@ -41,11 +41,13 @@ The **imapsync.csv** file needs to be filled with accounts (one per line) to syn
 * user password on source server.
 * user login on destination server. If empty, the same login as source will be used.
 * user password on destination server. If empty, the same password as source will be used.
+* source folder
+* destination folder
 
 This file will look like this:
 
-	admin@test.com;srcPa$$;newaccount@test.com;pass
-	user@mydomain.com;Password;;
+	admin@test.com;srcPa$$;newaccount@test.com;pass;INBOX;
+	user@mydomain.com;Password;;;;Temp
 
 All other columns will be ignored. That allow you to copy one of the CSV file in **errors/** and relaunch a sync:
 

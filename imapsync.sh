@@ -33,29 +33,38 @@ echo "[$date] IMAPSync started." >> $logfile
 user_nb=$(wc -l < $csvfile)
 user_current=0
 
-{ while IFS=';' read user1 pass1 user2 pass2 null; do
-	if [ -z $user1 ]; then
+{ while IFS=';' read user1 pass1 user2 pass2 prefix1 prefix2 null; do
+	if [ -z "$user1" ]; then
 		continue
 	fi
 	
 	# User1 (required)
 	user1_full=$user1
-	if [ -n $domain1 ]; then
+	if [ -n "$domain1" ]; then
 		user1_full=$user1_full$domain1
 	fi
 	
 	# User2 (optional)
 	user2_full=$user2
-	if [ -z $user2 ]; then
+	if [ -z "$user2" ]; then
 		user2_full=$user1
 	fi
 	
-	if [ -z $pass2 ]; then
+	if [ -z "$pass2" ]; then
 		pass2=$pass1
 	fi
 	
-	if [ -n $domain2 ]; then
+	if [ -n "$domain2" ]; then
 		user2_full=$user2_full$domain2
+	fi
+	
+	# Prefixes (optional)
+	if [ -n "$prefix1" ]; then
+		extra_args=$extra_args" --prefix1 \"$prefix1\""
+	fi
+	
+	if [ -n "$prefix2" ]; then
+		extra_args=$extra_args" --prefix2 \"$prefix2\""
 	fi
 	
 	# Users count
@@ -68,36 +77,38 @@ user_current=0
 	user_logfile=$user_logdir"/"$user_full"/`date +%Y-%m-%d`.log"
 	
 	date=`date +%x_-_%X`
-	echo "[$date] Starting $user1_full to $user2_full... $user_current/$user_nb" >> $logfile
+	echo "[$date] Starting $user1_full to $user2_full... $user_current/$user_nb" | tee $logfile
 	
 	# Overwrite pass
-	if [[ -n $globalpass ]]; then
+	if [ -n "$globalpass" ]; then
 		pass2=$globalpass
 	fi
 	
 	# Dry run
 	if [ -n "$dryrun" ]; then
-		extra_args="--dry"
+		extra_args=$extra_args" --dry"
 	fi
 	
 	# Booyah
-	imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
-		--host1 $host1 --port1 $port1 --user1 "$user1_full" --password1 "$pass1" $auth1 \
-		--host2 $host2 --port2 $port2 --user2 "$user2_full" --password2 "$pass2" $auth2 \
+	imapsync="imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
+		--host1 $host1 --port1 $port1 --user1 \"$user1_full\" --password1 \"$pass1\" $auth1 \
+		--host2 $host2 --port2 $port2 --user2 \"$user2_full\" --password2 \"$pass2\" $auth2 \
 		--exclude '^Bo&AO4-tes partag&AOk-es' --exclude '^Boîtes partagées' --exclude '^Dossiers partagés' --exclude '^Outbox' --exclude '^Junk' --exclude '^Autres utilisateurs' \
-		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>> $logfile 1>> $user_logfile
+		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/'"
 	
+	$imapsync 2>> $logfile 1>> $user_logfile
 	return=$?
 	
 	# Log result
 	if [ -n "$dryrun" ]; then
-		echo "[=====================] DRYRUN ($user1_full to $user2_full)"
+		echo $imapsync
+		echo "[=====================] DRYRUN ($user1_full to $user2_full)" | tee $logfile
 	elif [ $return -ne 0 ]; then
-		echo "[=====================] ERROR ($user1_full to $user2_full) Return code: $return" >> $logfile
+		echo "[=====================] ERROR ($user1_full to $user2_full) Return code: $return" | tee $logfile
 		echo "$user1;$pass1;$user2;$pass2;$return" >> $errorfile
 	else
 		date=`date +%x_-_%X`
-		echo "[$date] SUCCESS ($user1_full)" >> $logfile
+		echo "[$date] SUCCESS ($user1_full)" | tee $logfile
 	fi
 done ; } < $csvfile
 
