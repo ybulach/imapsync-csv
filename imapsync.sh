@@ -72,12 +72,12 @@ user_current=0
 	
 	# User import log
 	if [ -d $user_logdir ]; then
-		mkdir -p $user_logdir"/"$user_full
+		mkdir -p $user_logdir"/"$user1_full
 	fi
-	user_logfile=$user_logdir"/"$user_full"/`date +%Y-%m-%d`.log"
+	user_logfile=$user_logdir"/"$user1_full"/`date +%Y-%m-%d`.log"
 	
 	date=`date +%x_-_%X`
-	echo "[$date] Starting $user1_full to $user2_full... $user_current/$user_nb" | tee $logfile
+	echo "[$date] Starting $user1_full to $user2_full... $user_current/$user_nb" | tee -a $logfile
 	
 	# Overwrite pass
 	if [ -n "$globalpass" ]; then
@@ -90,25 +90,25 @@ user_current=0
 	fi
 	
 	# Booyah
-	imapsync="imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
-		--host1 $host1 --port1 $port1 --user1 \"$user1_full\" --password1 \"$pass1\" $auth1 \
-		--host2 $host2 --port2 $port2 --user2 \"$user2_full\" --password2 \"$pass2\" $auth2 \
+	imapsync=`imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
+		--host1 $host1 --port1 $port1 --user1 $user1_full --password1 $pass1 $auth1 \
+		--host2 $host2 --port2 $port2 --user2 $user2_full --password2 $pass2 $auth2 \
 		--exclude '^Bo&AO4-tes partag&AOk-es' --exclude '^Boîtes partagées' --exclude '^Dossiers partagés' --exclude '^Outbox' --exclude '^Junk' --exclude '^Autres utilisateurs' \
-		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/'"
-	
-	$imapsync 2>> $logfile 1>> $user_logfile
+		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>&1 >> $user_logfile`
 	return=$?
+	
+	echo "$imapsync" | tee -a $user_logfile >> $logfile
 	
 	# Log result
 	if [ -n "$dryrun" ]; then
 		echo $imapsync
-		echo "[=====================] DRYRUN ($user1_full to $user2_full)" | tee $logfile
+		echo "[=====================] DRYRUN ($user1_full to $user2_full)" | tee -a $logfile
 	elif [ $return -ne 0 ]; then
-		echo "[=====================] ERROR ($user1_full to $user2_full) Return code: $return" | tee $logfile
+		echo "[=====================] ERROR ($user1_full to $user2_full) Return code: $return" | tee -a $logfile
 		echo "$user1;$pass1;$user2;$pass2;$prefix1;$prefix2;$return" >> $errorfile
 	else
 		date=`date +%x_-_%X`
-		echo "[$date] SUCCESS ($user1_full)" | tee $logfile
+		echo "[$date] SUCCESS ($user1_full)" | tee -a $logfile
 	fi
 done ; } < $csvfile
 
