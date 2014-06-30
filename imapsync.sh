@@ -60,11 +60,12 @@ user_current=0
 	
 	# Prefixes (optional)
 	if [ -n "$prefix1" ]; then
-		extra_args=$extra_args" --prefix1 \"$prefix1\""
+		echo "Source prefix not yet implemented"
+		#TODO: extra_args=$extra_args" --prefix1 "$prefix1
 	fi
 	
 	if [ -n "$prefix2" ]; then
-		extra_args=$extra_args" --prefix2 \"$prefix2\""
+		extra_args=$extra_args" --prefix2 "$prefix2
 	fi
 	
 	# Users count
