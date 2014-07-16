@@ -95,6 +95,7 @@ user_current=0
 		--host1 $host1 --port1 $port1 --user1 $user1_full --password1 $pass1 $auth1 \
 		--host2 $host2 --port2 $port2 --user2 $user2_full --password2 $pass2 $auth2 \
 		--exclude '^Bo&AO4-tes partag&AOk-es' --exclude '^Boîtes partagées' --exclude '^Dossiers partagés' --exclude '^Outbox' --exclude '^Junk' --exclude '^Autres utilisateurs' \
+		--regexmess 's/>From /X-om:/' \
 		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>&1 >> $user_logfile`
 	return=$?
 	
