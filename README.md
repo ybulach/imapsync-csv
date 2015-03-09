@@ -11,15 +11,16 @@ To use this script, you will need [imapsync](https://github.com/imapsync/imapsyn
 
 	$ cd /usr/local/bin
 	$ wget https://raw.github.com/imapsync/imapsync/master/imapsync
-	$ apt-get install libmail-imapclient-perl libterm-readkey-perl libio-socket-ssl-perl libdigest-hmac-perl liburi-perl libfile-copy-recursive-perl libio-tee-perl
+	$ apt-get install libunicode-string-perl libmail-imapclient-perl libterm-readkey-perl libio-socket-ssl-perl libdigest-hmac-perl liburi-perl libfile-copy-recursive-perl libio-tee-perl
 	$ chmod +x imapsync
 
 You should make sure /usr/local/bin is in your `$PATH` variable.
 
-Then, you can install **imapsync-csv** in a folder:
+Then, you can download this GIT repo as ZIP and install **imapsync-csv** in a folder:
 
-	$ cd /home/user/imapsync-csv
-	$ git clone https://github.com/ybulach/imapsync-csv.git .
+	$ cd /home/user
+	$ unzip imapsync-csv.git
+	$ mv imapsync-csv.git imapsync-csv
 
 Write permissions are needed in the **errors/**, **logs/** and **migrations/** folders. You may want to only allow access of **errors/** and **imapsync.csv** to you, as they will contain plain passwords:
 
