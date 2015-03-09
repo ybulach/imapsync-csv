@@ -9,24 +9,30 @@ INSTALLATION
 ------------
 To use this script, you will need [imapsync](https://github.com/imapsync/imapsync). To install it, you can use this (tested on Debian 7 amd64):
 
-	$ cd /usr/local/bin
-	$ wget https://raw.github.com/imapsync/imapsync/master/imapsync
-	$ apt-get install libunicode-string-perl libmail-imapclient-perl libterm-readkey-perl libio-socket-ssl-perl libdigest-hmac-perl liburi-perl libfile-copy-recursive-perl libio-tee-perl
-	$ chmod +x imapsync
+```
+cd /usr/local/bin
+wget https://raw.github.com/imapsync/imapsync/master/imapsync
+apt-get install libunicode-string-perl libmail-imapclient-perl libterm-readkey-perl libio-socket-ssl-perl libdigest-hmac-perl liburi-perl libfile-copy-recursive-perl libio-tee-perl
+chmod +x imapsync
+```
 
 You should make sure /usr/local/bin is in your `$PATH` variable.
 
 Then, you can download this GIT repo as ZIP and install **imapsync-csv** in a folder:
 
-	$ cd /home/user
-	$ unzip imapsync-csv.git
-	$ mv imapsync-csv.git imapsync-csv
+```
+cd /home/user
+unzip imapsync-csv.git
+mv imapsync-csv.git imapsync-csv
+```
 
 Write permissions are needed in the **errors/**, **logs/** and **migrations/** folders. You may want to only allow access of **errors/** and **imapsync.csv** to you, as they will contain plain passwords:
 
-	$ chmod 700 errors -R
-	$ chmod 755 logs migrations -R
-	$ chmod 700 imapsync.csv
+```
+chmod 700 errors -R
+chmod 755 logs migrations -R
+chmod 700 imapsync.csv
+```
 
 USAGE
 -----
@@ -47,12 +53,16 @@ The **imapsync.csv** file needs to be filled with accounts (one per line) to syn
 
 This file will look like this:
 
-	admin@test.com;srcPa$$;newaccount@test.com;pass;INBOX;
-	user@mydomain.com;Password;;;;Temp
+```
+admin@test.com;srcPa$$;newaccount@test.com;pass;INBOX;
+user@mydomain.com;Password;;;;Temp
+```
 
 All other columns will be ignored. That allow you to copy one of the CSV file in **errors/** and relaunch a sync:
 
-	$ cp errors/2014-01-29.csv imapsync.csv
+```
+cp errors/2014-01-29.csv imapsync.csv
+```
 
 Before launching `imapsync.sh`, you need to edit the **imapsync.conf** file.
 
@@ -63,6 +73,8 @@ Before launching `imapsync.sh`, you need to edit the **imapsync.conf** file.
 
 Then to sync emails:
 
-	$ ./imapsync.sh
+```
+./imapsync.sh
+```
 
 You should launch this in `screen` to prevent sync being stopped in case of network/SSH temporary failure.
