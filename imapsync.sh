@@ -60,8 +60,7 @@ user_current=0
 	
 	# Prefixes (optional)
 	if [ -n "$prefix1" ]; then
-		echo "Source prefix not yet implemented"
-		#TODO: extra_args=$extra_args" --prefix1 "$prefix1
+		extra_args=$extra_args" --folderrec "$prefix1
 	fi
 	
 	if [ -n "$prefix2" ]; then
@@ -81,8 +80,12 @@ user_current=0
 	echo "[$date] Starting $user1_full to $user2_full... $user_current/$user_nb" | tee -a $logfile
 	
 	# Overwrite pass
-	if [ -n "$globalpass" ]; then
-		pass2=$globalpass
+	if [ -n "$globalpass1" ]; then
+		pass1=$globalpass1
+	fi
+	
+	if [ -n "$globalpass2" ]; then
+		pass2=$globalpass2
 	fi
 	
 	# Dry run
@@ -94,6 +97,7 @@ user_current=0
 	imapsync=`imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
 		--host1 $host1 --port1 $port1 --user1 $user1_full --password1 $pass1 $auth1 \
 		--host2 $host2 --port2 $port2 --user2 $user2_full --password2 $pass2 $auth2 \
+		--useheader Date --useheader Subject \
 		--exclude '^Bo&AO4-tes partag&AOk-es' --exclude '^Boîtes partagées' --exclude '^Dossiers partagés' --exclude '^Outbox' --exclude '^Junk' --exclude '^Autres utilisateurs' \
 		--regexmess 's/>From /X-om:/' \
 		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>&1 >> $user_logfile`
