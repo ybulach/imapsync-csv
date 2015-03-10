@@ -68,7 +68,7 @@ Before launching `imapsync.sh`, you need to edit the **imapsync.conf** file.
 
 * **authx** expects imapsync arguments for authentication (**--sslx**, **--authmechx**, etc.)
 * **domainx** can be filled if all users are in the same domain and if the source/destination server expects full email address for authentication
-* **globalpass** can be filled with a global password, if the destination server allows password overwrite (through a specific plugin for example)
+* **globalpassx** can be filled with a global password, if the source/destination server allows password overwrite (through a specific plugin for example, or using and admin account)
 * **dryrun** allows execution of the scripts and imapsync without applying modifications, for example to check authentication of users
 
 Then to sync emails:
