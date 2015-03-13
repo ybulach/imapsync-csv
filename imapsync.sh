@@ -60,11 +60,17 @@ user_current=0
 	
 	# Prefixes (optional)
 	if [ -n "$prefix1" ]; then
-		extra_args=$extra_args" --folderrec "$prefix1
+		extra_args=$extra_args" --folderrec '$prefix1'"
+		if [ -n "$prefix2" ]; then
+			prefix=$(echo $prefix2 | sed 's/\//\\\//g')
+			extra_args=$extra_args" --regextrans2 's/^$prefix\/$prefix1/$prefix/'"
+		else
+			extra_args=$extra_args" --regextrans2 's/^$prefix1//'"
+		fi
 	fi
 	
 	if [ -n "$prefix2" ]; then
-		extra_args=$extra_args" --prefix2 "$prefix2
+		extra_args=$extra_args" --prefix2 '$prefix2/'"
 	fi
 	
 	# Users count
@@ -94,13 +100,14 @@ user_current=0
 	fi
 	
 	# Booyah
-	imapsync=`imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
+	imapsync="imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
 		--host1 $host1 --port1 $port1 --user1 $user1_full --password1 $pass1 $auth1 \
 		--host2 $host2 --port2 $port2 --user2 $user2_full --password2 $pass2 $auth2 \
 		--useheader Date --useheader Subject \
 		--exclude '^Bo&AO4-tes partag&AOk-es' --exclude '^Boîtes partagées' --exclude '^Dossiers partagés' --exclude '^Outbox' --exclude '^Junk' --exclude '^Autres utilisateurs' \
 		--regexmess 's/>From /X-om:/' \
-		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>&1 >> $user_logfile`
+		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>&1 >> $user_logfile"
+	imapsync=$(eval $imapsync)
 	return=$?
 	
 	echo "$imapsync" | tee -a $user_logfile >> $logfile
@@ -122,4 +129,3 @@ date=`date +%x_-_%X`
 echo "[$date] IMAPSync Finished." >> $logfile
 echo "------------------------------------" >> $logfile
 echo "" >> $logfile
-
