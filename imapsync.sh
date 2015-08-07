@@ -106,7 +106,8 @@ user_current=0
 		--useheader Date --useheader Subject \
 		--exclude '^Bo&AO4-tes partag&AOk-es' --exclude '^Boîtes partagées' --exclude '^Dossiers partagés' --exclude '^Outbox' --exclude '^Junk' --exclude '^Autres utilisateurs' \
 		--regexmess 's/>From /X-om:/' \
-		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' 2>&1 >> $user_logfile"
+		--regextrans2 's/^INBOX\///' --regextrans2 's/^Deleted Messages/Trash/' --regextrans2 's/^Corbeille/Trash/' --regextrans2 's/^Sent Messages/Sent/' --regextrans2 's/^Envoyés/Sent/' \
+		--regextrans2 's/\(//' --regextrans2 's/\)//' 2>&1 >> $user_logfile"
 	imapsync=$(eval $imapsync)
 	return=$?
 	
