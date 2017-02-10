@@ -42,6 +42,8 @@ fi
 	if [ -z "$user1" ]; then
 		continue
 	fi
+
+	local_args=
 	
 	# User1 (required)
 	user1_full=$user1
