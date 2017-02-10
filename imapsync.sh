@@ -33,6 +33,11 @@ echo "[$date] IMAPSync started." >> $logfile
 user_nb=$(wc -l < $csvfile)
 user_current=0
 
+# Dry run
+if [ -n "$dryrun" ]; then
+	extra_args=$extra_args" --dry"
+fi
+
 { while IFS=';' read user1 pass1 user2 pass2 prefix1 prefix2 null; do
 	if [ -z "$user1" ]; then
 		continue
@@ -60,18 +65,18 @@ user_current=0
 	
 	# Prefixes (optional)
 	if [ -n "$prefix1" ]; then
-		extra_args=$extra_args" --folderrec '$prefix1'"
+		local_args=$local_args" --folderrec '$prefix1'"
 		new_prefix1=$(echo $prefix1 | sed 's/\//\\\//g')
 		if [ -n "$prefix2" ]; then
 		    new_prefix2=$(echo $prefix2 | sed 's/\//\\\//g')
-			extra_args=$extra_args" --regextrans2 's/^$new_prefix2\/$new_prefix1/$new_prefix2/'"
+			local_args=$local_args" --regextrans2 's/^$new_prefix2\/$new_prefix1/$new_prefix2/'"
 		else
-			extra_args=$extra_args" --regextrans2 's/^$new_prefix1//'"
+			local_args=$local_args" --regextrans2 's/^$new_prefix1//'"
 		fi
 	fi
 	
 	if [ -n "$prefix2" ]; then
-		extra_args=$extra_args" --prefix2 '$prefix2/'"
+		local_args=$local_args" --prefix2 '$prefix2/'"
 	fi
 	
 	# Users count
@@ -95,13 +100,8 @@ user_current=0
 		pass2=$globalpass2
 	fi
 	
-	# Dry run
-	if [ -n "$dryrun" ]; then
-		extra_args=$extra_args" --dry"
-	fi
-	
 	# Booyah
-	imapsync="imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args \
+	imapsync="imapsync --nosyncacls --syncinternaldates --skipsize --nofoldersizes --allowsizemismatch --idatefromheader --reconnectretry1 20 --reconnectretry2 20 $extra_args $local_args \
 		--host1 $host1 --port1 $port1 --user1 $user1_full --password1 $pass1 $auth1 \
 		--host2 $host2 --port2 $port2 --user2 $user2_full --password2 $pass2 $auth2 \
 		--useheader Date --useheader Subject \
