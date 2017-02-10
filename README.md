@@ -12,7 +12,7 @@ To use this script, you will need [imapsync](https://github.com/imapsync/imapsyn
 ```
 cd /usr/local/bin
 wget https://raw.github.com/imapsync/imapsync/master/imapsync
-apt-get install libunicode-string-perl libmail-imapclient-perl libterm-readkey-perl libio-socket-ssl-perl libdigest-hmac-perl liburi-perl libfile-copy-recursive-perl libio-tee-perl
+apt-get install libreadonly-perl libunicode-string-perl libmail-imapclient-perl libterm-readkey-perl libio-socket-ssl-perl libdigest-hmac-perl liburi-perl libfile-copy-recursive-perl libio-tee-perl
 chmod +x imapsync
 ```
 
