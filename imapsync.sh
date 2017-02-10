@@ -61,11 +61,12 @@ user_current=0
 	# Prefixes (optional)
 	if [ -n "$prefix1" ]; then
 		extra_args=$extra_args" --folderrec '$prefix1'"
+		new_prefix1=$(echo $prefix1 | sed 's/\//\\\//g')
 		if [ -n "$prefix2" ]; then
-			prefix=$(echo $prefix2 | sed 's/\//\\\//g')
-			extra_args=$extra_args" --regextrans2 's/^$prefix\/$prefix1/$prefix/'"
+		    new_prefix2=$(echo $prefix2 | sed 's/\//\\\//g')
+			extra_args=$extra_args" --regextrans2 's/^$new_prefix2\/$new_prefix1/$new_prefix2/'"
 		else
-			extra_args=$extra_args" --regextrans2 's/^$prefix1//'"
+			extra_args=$extra_args" --regextrans2 's/^$new_prefix1//'"
 		fi
 	fi
 	
